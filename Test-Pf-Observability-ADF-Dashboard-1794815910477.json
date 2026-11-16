@@ -1,0 +1,967 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\n\">\n<img src=\"https://azure.microsoft.com/svghandler/data-factory?width=600&height=315\" width=\"60\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:26px;font-weight:bold;color:#F8FAFC;\">\nData Factory Overview\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 3
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| summarize PipelinesRanOnce = dcount(PipelineName)",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Pipelines",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 3
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "same_as_value",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| where $__timeFilter(TimeGenerated)\r\n| where Status == \"Succeeded\"\r\n| summarize SuccessfulRuns = count()",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Successful Runs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "light-red",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 3
+      },
+      "id": 4,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| where $__timeFilter(TimeGenerated)\r\n| where Status == \"Failed\"\r\n| summarize FailedRuns = count()",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed Runs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#1bc6ecc4",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 3
+      },
+      "id": 5,
+      "options": {
+        "colorMode": "background_solid",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| where $__timeFilter(Start)\r\n| extend Predecessor = parse_json(Predecessors)[0]\r\n| extend TriggerName = tostring(Predecessor.Name)\r\n| extend TriggerType = tostring(Predecessor.InvokedByType)\r\n| summarize TotalTriggers = dcount(RunId)",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Triggers Fired",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "Failed": {
+                  "color": "light-red",
+                  "index": 1
+                },
+                "InProgress": {
+                  "color": "super-light-blue",
+                  "index": 2
+                },
+                "Succeeded": {
+                  "color": "light-green",
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 7
+      },
+      "id": 6,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "// ============================================================================\r\n// Azure Data Factory resource configuration\r\n// ============================================================================\r\nlet SubscriptionId = \"262a3c1d-7fe3-4bfb-9f90-7a5b89109336\";\r\nlet ResourceGroup  = \"Idea2.0\";\r\nlet DataFactoryName = \"pf-observability-datafactory\";\r\n\r\nlet FactoryResourceId = strcat(\r\n    \"/subscriptions/\", SubscriptionId,\r\n    \"/resourceGroups/\", ResourceGroup,\r\n    \"/providers/Microsoft.DataFactory/factories/\", DataFactoryName\r\n);\r\n\r\n// ============================================================================\r\n// Final row per RunId within the selected Grafana time window\r\n// ============================================================================\r\nlet FinalRuns =\r\n    ADFPipelineRun\r\n    | extend\r\n        TG = todatetime(TimeGenerated),\r\n        Start_dt = todatetime(Start)\r\n    | where $__timeFilter(TG)\r\n    | summarize arg_max(TG, *) by RunId;\r\n\r\n// ============================================================================\r\n// Latest run for each pipeline\r\n// ============================================================================\r\nlet LatestPerPipeline =\r\n    FinalRuns\r\n    | summarize arg_max(Start_dt, *) by PipelineName\r\n    | project\r\n        PipelineName,\r\n        LatestRun_Start = Start_dt,\r\n        LatestRun_Status = Status,\r\n        LatestRun_RunId = RunId;\r\n\r\n// ============================================================================\r\n// Previous completed run\r\n// ============================================================================\r\nlet Prev1_ByPipeline =\r\n    FinalRuns\r\n    | where Status in (\"Succeeded\", \"Failed\")\r\n    | join kind=inner (\r\n        LatestPerPipeline\r\n        | project PipelineName, LatestRun_Start\r\n    ) on PipelineName\r\n    | where Start_dt < LatestRun_Start\r\n    | summarize PrevRun1_Start = max(Start_dt) by PipelineName;\r\n\r\nlet Prev1_WithStatus =\r\n    Prev1_ByPipeline\r\n    | join kind=leftouter (\r\n        FinalRuns\r\n        | project PipelineName, Start_dt, Status\r\n    ) on PipelineName\r\n    | where Start_dt == PrevRun1_Start\r\n    | project\r\n        PipelineName,\r\n        PrevRun1_Start,\r\n        PrevRun1_Status = Status;\r\n\r\n// ============================================================================\r\n// Second previous completed run\r\n// ============================================================================\r\nlet Prev2_ByPipeline =\r\n    Prev1_WithStatus\r\n    | join kind=inner (\r\n        FinalRuns\r\n        | where Status in (\"Succeeded\", \"Failed\")\r\n        | project PipelineName, Start_dt, Status\r\n    ) on PipelineName\r\n    | where Start_dt < PrevRun1_Start\r\n    | summarize PrevRun2_Start = max(Start_dt) by PipelineName;\r\n\r\nlet Prev2_WithStatus =\r\n    Prev2_ByPipeline\r\n    | join kind=leftouter (\r\n        FinalRuns\r\n        | project PipelineName, Start_dt, Status\r\n    ) on PipelineName\r\n    | where Start_dt == PrevRun2_Start\r\n    | project\r\n        PipelineName,\r\n        PrevRun2_Start,\r\n        PrevRun2_Status = Status;\r\n\r\n// ============================================================================\r\n// Final Grafana table\r\n// ============================================================================\r\nLatestPerPipeline\r\n| join kind=leftouter Prev1_WithStatus on PipelineName\r\n| join kind=leftouter Prev2_WithStatus on PipelineName\r\n| extend ADFUrl = strcat(\r\n    \"https://adf.azure.com/en/authoring/pipeline/\",\r\n    tostring(PipelineName),\r\n    \"?factory=\",\r\n    FactoryResourceId\r\n)\r\n| project\r\n    PipelineName,\r\n    LatestRun_Start,\r\n    LatestRun_Status,\r\n    PrevRun1_Start,\r\n    PrevRun1_Status,\r\n    PrevRun2_Start,\r\n    PrevRun2_Status,\r\n    ADFUrl\r\n| order by PipelineName asc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Pipeline Execution Table",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "Breached": {
+                  "color": "super-light-red",
+                  "index": 4
+                },
+                "Compliant": {
+                  "color": "light-purple",
+                  "index": 3
+                },
+                "Failed": {
+                  "color": "semi-dark-red",
+                  "index": 5
+                },
+                "Succeeded": {
+                  "color": "semi-dark-green",
+                  "index": 6
+                },
+                "[0 - 4]": {
+                  "color": "light-green",
+                  "index": 0
+                },
+                "[4 - 5]": {
+                  "color": "super-light-orange",
+                  "index": 1
+                },
+                "[5 - ∞]": {
+                  "color": "light-red",
+                  "index": 2
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "percentage",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 14
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "enablePagination": true,
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "let SLAMinutes = 5.0;\r\n\r\nlet SubscriptionId = \"262a3c1d-7fe3-4bfb-9f90-7a5b89109336\";\r\nlet ResourceGroup = \"Idea2.0\";\r\nlet DataFactoryName = \"pf-observability-datafactory\";\r\n\r\nlet FactoryResourceId = strcat(\r\n    \"/subscriptions/\", SubscriptionId,\r\n    \"/resourceGroups/\", ResourceGroup,\r\n    \"/providers/Microsoft.DataFactory/factories/\", DataFactoryName\r\n);\r\n\r\nlet PipelineRuns =\r\n    ADFPipelineRun\r\n    | where $__timeFilter(TimeGenerated)\r\n    | where Status in (\"Succeeded\", \"Failed\")\r\n    | extend\r\n        StartDateTime = todatetime(Start),\r\n        EndDateTime = todatetime(End)\r\n    | where isnotnull(StartDateTime) and isnotnull(EndDateTime)\r\n    | extend DurationSeconds = datetime_diff(\r\n        \"second\",\r\n        EndDateTime,\r\n        StartDateTime\r\n    )\r\n    | where DurationSeconds >= 0\r\n    | extend DurationMinutes = round(\r\n        todouble(DurationSeconds) / 60.0,\r\n        2\r\n    )\r\n    | where DurationMinutes > 0;\r\n\r\nlet MaximumDurationByPipeline =\r\n    PipelineRuns\r\n    | summarize\r\n        MaximumObservedDurationMinutes = max(DurationMinutes)\r\n      by PipelineName;\r\n\r\nPipelineRuns\r\n| join kind=leftouter MaximumDurationByPipeline on PipelineName\r\n| extend MaximumAllowedMinutes = SLAMinutes\r\n| extend SLAStatus = case(\r\n    DurationMinutes > SLAMinutes, \"Breached\",\r\n    \"Compliant\"\r\n)\r\n| extend ADFUrl = strcat(\r\n    \"https://adf.azure.com/en/authoring/pipeline/\",\r\n    tostring(PipelineName),\r\n    \"?factory=\",\r\n    FactoryResourceId\r\n)\r\n| project\r\n    PipelineName,\r\n    RunId,\r\n    Status,\r\n    Start = StartDateTime,\r\n    End = EndDateTime,\r\n    DurationMinutes,\r\n    MaximumObservedDurationMinutes,\r\n    MaximumAllowedMinutes,\r\n    SLAStatus,\r\n    ADFUrl\r\n| order by DurationMinutes desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Pipelines Running for more than 1min",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 21
+      },
+      "id": 8,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "let SubscriptionId = \"262a3c1d-7fe3-4bfb-9f90-7a5b89109336\";\r\nlet ResourceGroup = \"Idea2.0\";\r\nlet DataFactoryName = \"pf-observability-datafactory\";\r\n\r\nlet FactoryResourceId = strcat(\r\n    \"/subscriptions/\", SubscriptionId,\r\n    \"/resourceGroups/\", ResourceGroup,\r\n    \"/providers/Microsoft.DataFactory/factories/\", DataFactoryName\r\n);\r\n\r\nADFPipelineRun\r\n| where $__timeFilter(TimeGenerated)\r\n| where End > Start and Status == \"Succeeded\"\r\n| extend DurationSeconds = datetime_diff(\r\n    \"second\",\r\n    todatetime(End),\r\n    todatetime(Start)\r\n)\r\n| summarize\r\n    LastRunInSeconds = max(DurationSeconds),\r\n    AvgPastRunsInSeconds = avg(DurationSeconds)\r\n  by PipelineName\r\n| extend PercentDeviation = case(\r\n    AvgPastRunsInSeconds > 0,\r\n    round(\r\n        ((LastRunInSeconds - AvgPastRunsInSeconds)\r\n        / AvgPastRunsInSeconds) * 100.0,\r\n        2\r\n    ),\r\n    0.0\r\n)\r\n| where PercentDeviation >= 10 or PercentDeviation <= -5\r\n| extend ADFUrl = strcat(\r\n    \"https://adf.azure.com/en/authoring/pipeline/\",\r\n    tostring(PipelineName),\r\n    \"?factory=\",\r\n    FactoryResourceId\r\n)\r\n| project\r\n    PipelineName,\r\n    LastRunInSeconds,\r\n    AvgPastRunsInSeconds = round(AvgPastRunsInSeconds, 2),\r\n    PercentDeviation,\r\n    ADFUrl\r\n| order by PercentDeviation desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Critical Pipeline Run Deviation",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 9,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "let SubscriptionId = \"262a3c1d-7fe3-4bfb-9f90-7a5b89109336\";\r\nlet ResourceGroup = \"Idea2.0\";\r\nlet DataFactoryName = \"pf-observability-datafactory\";\r\n\r\nlet FactoryResourceId = strcat(\r\n    \"/subscriptions/\", SubscriptionId,\r\n    \"/resourceGroups/\", ResourceGroup,\r\n    \"/providers/Microsoft.DataFactory/factories/\", DataFactoryName\r\n);\r\n\r\nADFPipelineRun\r\n| where $__timeFilter(TimeGenerated)\r\n| where Status in (\"Failed\", \"Succeeded\")\r\n| summarize arg_max(Start, Status, RunId, End) by PipelineName\r\n| where Status == \"Failed\"\r\n| join kind=leftouter (\r\n    ADFActivityRun\r\n    | where $__timeFilter(TimeGenerated)\r\n    | where Status == \"Failed\"\r\n    | summarize arg_max(\r\n        Start,\r\n        ActivityName,\r\n        FailureType,\r\n        ErrorMessage,\r\n        ActivityIterationCount,\r\n        LinkedServiceName,\r\n        Output\r\n      ) by PipelineRunId\r\n    | extend OutputJson = parse_json(Output)\r\n    | extend\r\n        DataReadGB = iif(\r\n            isnull(todouble(OutputJson.dataRead)),\r\n            0.0,\r\n            todouble(OutputJson.dataRead) / 1024.0 / 1024.0 / 1024.0\r\n        ),\r\n        DataWrittenGB = iif(\r\n            isnull(todouble(OutputJson.dataWritten)),\r\n            0.0,\r\n            todouble(OutputJson.dataWritten) / 1024.0 / 1024.0 / 1024.0\r\n        )\r\n    | project\r\n        PipelineRunId,\r\n        ActivityName,\r\n        ErrorType = FailureType,\r\n        ErrorMessage,\r\n        RetryCount = ActivityIterationCount,\r\n        LinkedServiceName,\r\n        DataReadGB,\r\n        DataWrittenGB\r\n) on $left.RunId == $right.PipelineRunId\r\n| extend Duration = datetime_diff(\r\n    \"second\",\r\n    todatetime(End),\r\n    todatetime(Start)\r\n)\r\n| extend PointOfFailure = coalesce(\r\n    ActivityName,\r\n    LinkedServiceName\r\n)\r\n| extend DataVolumeProcessed = DataReadGB + DataWrittenGB\r\n| extend CostImpact = DataVolumeProcessed * 0.05\r\n| extend ADFUrl = strcat(\r\n    \"https://adf.azure.com/en/authoring/pipeline/\",\r\n    tostring(PipelineName),\r\n    \"?factory=\",\r\n    FactoryResourceId\r\n)\r\n| project\r\n    PipelineName,\r\n    RunId,\r\n    Status,\r\n    Start,\r\n    End,\r\n    Duration,\r\n    ActivityName,\r\n    ErrorType,\r\n    ErrorMessage,\r\n    PointOfFailure,\r\n    RetryCount,\r\n    DataVolumeProcessed,\r\n    CostImpact,\r\n    ADFUrl\r\n| order by Start desc\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Pipeline Error Analysis",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 36
+      },
+      "id": 10,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "let SubscriptionId = \"262a3c1d-7fe3-4bfb-9f90-7a5b89109336\";\r\nlet ResourceGroup = \"Idea2.0\";\r\nlet DataFactoryName = \"pf-observability-datafactory\";\r\n\r\nlet FactoryResourceId = strcat(\r\n    \"/subscriptions/\", SubscriptionId,\r\n    \"/resourceGroups/\", ResourceGroup,\r\n    \"/providers/Microsoft.DataFactory/factories/\", DataFactoryName\r\n);\r\n\r\nADFActivityRun\r\n| where $__timeFilter(End)\r\n| extend\r\n    StartDateTime = todatetime(Start),\r\n    EndDateTime = todatetime(End)\r\n| where isnotnull(StartDateTime) and isnotnull(EndDateTime)\r\n| extend duration_sec = datetime_diff(\r\n    \"second\",\r\n    EndDateTime,\r\n    StartDateTime\r\n)\r\n| where duration_sec >= 0\r\n| summarize arg_max(duration_sec, *) by PipelineName\r\n| top 10 by duration_sec desc\r\n| extend ADFUrl = strcat(\r\n    \"https://adf.azure.com/en/authoring/pipeline/\",\r\n    tostring(PipelineName),\r\n    \"?factory=\",\r\n    FactoryResourceId\r\n)\r\n| project\r\n    PipelineName,\r\n    End = EndDateTime,\r\n    duration_sec,\r\n    ActivityType,\r\n    ActivityRunId,\r\n    ActivityName,\r\n    Status,\r\n    ADFUrl\r\n| order by duration_sec desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Long Activity runs",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 11,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| extend SysParams = parse_json(SystemParameters)\r\n| extend RequestTime = todatetime(SysParams.PipelineRunRequestTime)\r\n| extend QueuedDurationSeconds = case(\r\n    Status == \"Queued\" and isnull(End), datetime_diff('second', now(), Start),  // Still queued\r\n    Status in (\"Succeeded\", \"Failed\") and isnotnull(RequestTime), datetime_diff('second', Start, RequestTime),  // Completed\r\n    long(null)\r\n)\r\n| where QueuedDurationSeconds > 0  // Filter out zero or null (commenting for testing)\r\n| project PipelineName, RunId, Status, Start, End, QueuedDurationSeconds\r\n| order by QueuedDurationSeconds desc\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Long Queued Pipelines",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 51
+      },
+      "id": 12,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| where $__timeFilter(TimeGenerated)\r\n| where Status in (\"Succeeded\", \"Failed\")\r\n| extend DurationMinutes = datetime_diff('minute', End, Start)\r\n| where DurationMinutes > 4\r\n| project PipelineName, RunId, Status, Start, End, DurationMinutes\r\n| order by DurationMinutes desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Pipelines Running for more than 4min",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Test-Pf-Observability-ADF-Dashboard",
+  "uid": "nagkh4t",
+  "version": 20,
+  "weekStart": ""
+}
