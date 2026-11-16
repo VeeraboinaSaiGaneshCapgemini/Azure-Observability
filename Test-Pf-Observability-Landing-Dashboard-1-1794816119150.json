@@ -1,0 +1,2233 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "links": [],
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 3,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 1,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\n\">\n<img src=\"https://tse2.mm.bing.net/th/id/OIP.5P3gRMAf-vMc_sMlaNXfLAHaHa?r=0&rs=1&pid=ImgDetMain&o=7&rm=3\" width=\"60\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:26px;font-weight:bold;color:#F8FAFC;\">\nData Platform Observability\n</div>\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 3
+      },
+      "id": 2,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "ADF Dashboard",
+          "url": "https://pf-obser-az-grafana-ws-f9dhejfucxf4c6hn.eus.grafana.azure.com/goto/S5sX6O7DR?orgId=1"
+        }
+      ],
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\njustify-content:center\n\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:15px;font-weight:bold;color:#F8FAFC;\">\nADF Overview\n</div>\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-green",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "min": -1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SuccessfulDistinctPipelines"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Succeeded"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#6eae66",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FailedDistinctPipelines"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Failed"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 0,
+        "y": 5
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 35
+        },
+        "textMode": "value_and_name",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "let runs = ADFPipelineRun\r\n| where $__timeFilter(TimeGenerated);\r\n\r\nruns\r\n| summarize\r\n    SuccessfulDistinctPipelines = dcountif(PipelineName, Status == \"Succeeded\"),\r\n    FailedDistinctPipelines = dcountif(PipelineName, Status == \"Failed\") \r\n    \r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Pipelines",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Succeeded"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 15,
+        "x": 9,
+        "y": 5
+      },
+      "id": 4,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize\r\n    Succeeded = countif(Status == \"Succeeded\"),\r\n    Failed = countif(Status == \"Failed\")\r\n| extend Total = Succeeded + Failed",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Pipeline Runs",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "dash": [
+                10,
+                10
+              ],
+              "fill": "dash"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TotalRuns"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SuccessfulRuns"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FailedRuns"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "AvgDurationMinutes"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 0,
+        "y": 9
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFPipelineRun\r\n| where $__timeFilter(TimeGenerated)\r\n| where isnotnull(Start) and isnotnull(End) and End >= Start\r\n| extend DurationMinutes = datetime_diff('minute', End, Start)\r\n| extend SLAStatus = iff(DurationMinutes > 30, \"SLA Breached\", \"Within SLA\")\r\n| summarize\r\n    TotalRuns = count(),\r\n    SLA_Breached = countif(SLAStatus == \"SLA Breached\"),\r\n    SuccessfulRuns = countif(Status == \"Succeeded\"),\r\n    FailedRuns = countif(Status == \"Failed\"),\r\n    AvgDurationMinutes = avg(DurationMinutes)\r\nby PipelineName, bin(TimeGenerated, 1h)\r\n| order by TimeGenerated asc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Business SLA Compliance",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "fillOpacity": 80,
+            "gradientMode": "opacity",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineWidth": 1,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 12,
+        "x": 12,
+        "y": 9
+      },
+      "id": 6,
+      "options": {
+        "barRadius": 0,
+        "barWidth": 0.77,
+        "fullHighlight": false,
+        "groupWidth": 0.77,
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "orientation": "horizontal",
+        "showValue": "auto",
+        "stacking": "none",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        },
+        "xTickLabelRotation": 0,
+        "xTickLabelSpacing": 0
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFActivityRun\r\n| where $__timeFilter(TimeGenerated)\r\n| where Status == \"Failed\"\r\n| summarize FailureCount=count()\r\nby ActivityType,PipelineName\r\n| top 10 by FailureCount desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Operational Failure Intelligence",
+      "type": "barchart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 15
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "ADFActivityRun\r\n| where $__timeFilter( TimeGenerated)\r\n| summarize\r\n    TotalActivities=count(),\r\n    FailedActivities=countif(Status==\"Failed\"),\r\n    SuccessfulActivities=countif(Status==\"Succeeded\")\r\nby ActivityType\r\n| order by TotalActivities desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Cloud Cost & Operational Efficiency ",
+      "type": "table"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 23
+      },
+      "id": 9,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\njustify-content:center\n\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:15px;font-weight:bold;color:#F8FAFC;\">\nADB Overview\n</div>\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "super-light-orange",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": ""
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 0,
+        "y": 25
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| extend Params = parse_json(RequestParams)\r\n| extend JobId = tostring(Params[\"jobId\"]),\r\n         RunId = tostring(Params[\"runId\"]),\r\n         JobName = tostring(Params[\"taskKey\"]),\r\n         Status = tostring(Params[\"jobTerminalState\"])\r\n| where isnotempty(JobId) and isnotempty(RunId)\r\n| where $__timeFilter(TimeGenerated)\r\n| where Status == \"Failed\"\r\n| summarize FailedCount = count() by bin(TimeGenerated, 1h)\r\n| order by TimeGenerated asc\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Processing Stability Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failure"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "percent"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Succeeded"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "semi-dark-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 12,
+        "x": 12,
+        "y": 25
+      },
+      "id": 10,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "// -------- Bucket 1: FINAL STATUS PER JOB RUN --------\r\nlet DBX =\r\nDatabricksJobs\r\n| where $__timeFilter(TimeGenerated)\r\n| extend rp = parse_json(RequestParams), rs = parse_json(Response)\r\n| extend action_lower = tolower(tostring(ActionName))\r\n| extend ActionNorm = case(\r\n    action_lower in (\"runsucceeded\",\"run_succeeded\",\"jobrunsucceeded\"), \"Succeeded\",\r\n    action_lower in (\"runfailed\",\"run_failed\",\"jobrunfailed\"),         \"Failed\",\r\n    \"\"\r\n)\r\n| where ActionNorm != \"\"\r\n| extend RunId = coalesce(\r\n    tostring(rp.run_id), tostring(rp.runId), tostring(rp[\"run-id\"]), tostring(rp.RunId),\r\n    tostring(rs.run_id), tostring(rs.runId), tostring(rs[\"run-id\"]), tostring(rs.RunId)\r\n)\r\n| where RunId != \"\";\r\n\r\n// FINAL event per RunId\r\nlet FinalRuns =\r\nDBX\r\n| summarize arg_max(TimeGenerated, ActionNorm) by RunId;\r\n\r\n// OUTPUT FOR BIG LEFT TILES\r\nFinalRuns\r\n| summarize\r\n    Succeeded = dcountif(RunId, ActionNorm == \"Succeeded\"),\r\n    Failed    = dcountif(RunId, ActionNorm == \"Failed\"),\r\n    Total     = dcount(RunId)\r\n    | extend Total = Succeeded + Failed\r\n    | extend Failure = iff(Total > 0,\r\n                              todouble(Failed) * 100.0 / todouble(Total),\r\n                              todouble(0))",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Job Runs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "IntegrationActivity"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ActiveUsers"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FailedActivities"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FailureRate"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 35
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| summarize IntegrationActivity = count()",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        },
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| summarize ActiveUsers = dcount(Identity)",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "B"
+        },
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| summarize\r\n    TotalActivities = count(),\r\n    FailedActivities = countif(Response has \"Failed\")\r\n| extend FailureRate = round((FailedActivities * 100.0) / TotalActivities, 2)\r\n| extend PlatformHealth =\r\n    case(\r\n        FailureRate < 5, \"Healthy\",\r\n        FailureRate < 10, \"Moderate\",\r\n        \"Critical\"\r\n    )\r\n\r\n ",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "C"
+        }
+      ],
+      "title": "",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 34
+      },
+      "id": 12,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\njustify-content:center\n\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:15px;font-weight:bold;color:#F8FAFC;\">\nADLS Overview\n</div>\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "fieldMinMax": true,
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Success"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failure"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 7,
+        "x": 0,
+        "y": 36
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "StorageBlobLogs\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize \r\n    Count = count() \r\n    by bin(TimeGenerated, $__interval),\r\n       Status = iff(StatusCode startswith \"2\", \"Success\", \"Failure\")\r\n| evaluate pivot(Status, sum(Count))\r\n| order by TimeGenerated asc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Success vs Failure",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 28,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 2,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 9,
+        "x": 7,
+        "y": 36
+      },
+      "id": 15,
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum",
+            "mean"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "StorageBlobLogs\r\n| where OperationName in (\"PutBlob\",\"PutBlockList\",\"AppendBlock\",\"FlushWithClose\")\r\n| summarize TotalDataGB = round(sum(RequestBodySize)/1024.0/1024/1024,2)\r\nby bin(TimeGenerated, 1d)\r\n| order by TimeGenerated asc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Data Ingestion Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 16,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "log": 2,
+              "type": "log"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 8,
+        "x": 16,
+        "y": 36
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [
+            "sum"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "StorageBlobLogs\r\n| where OperationName in (\"GetBlob\",\"GetBlobProperties\",\"ReadFile\")\r\n| summarize DataReadGB =\r\nround(sum(ResponseBodySize)/1024.0/1024/1024,2)\r\nby bin(TimeGenerated,1d)\r\n| order by TimeGenerated asc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Data Consumption Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "\r\nStorageBlobLogs\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize lastWrite = max(TimeGenerated) by AccountName\r\n| extend freshnessHours = datetime_diff(\"hour\", now(), lastWrite)\r\n| order by freshnessHours desc \r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Freshness",
+      "type": "table"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 49
+      },
+      "id": 17,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\njustify-content:center\n\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:15px;font-weight:bold;color:#F8FAFC;\">\nSQL Overview\n</div>\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Availability sqldb"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Availability"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 5,
+        "x": 0,
+        "y": 51
+      },
+      "id": 18,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "vertical",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Maximum",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "availability",
+            "metricNamespace": "microsoft.sql/servers/databases",
+            "region": "eastus",
+            "resources": [
+              {
+                "metricNamespace": "Microsoft.Sql/servers/databases",
+                "region": "eastus",
+                "resourceGroup": "Idea2.0",
+                "resourceName": "dataplatform123/sqldb",
+                "subscription": "262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+              }
+            ],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+        }
+      ],
+      "title": "Availability",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "dashed"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "#EAB839",
+                "value": 2
+              },
+              {
+                "color": "#6ED0E0",
+                "value": 5
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 10,
+        "x": 5,
+        "y": 51
+      },
+      "id": 19,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "AzureDiagnostics\r\n| where Category == \"QueryStoreRuntimeStatistics\"\r\n| where duration_d >0\r\n| summarize AvgDuration_sec=avg(duration_d)/1000 by bin(TimeGenerated,1h)\r\n| order by TimeGenerated asc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourcegroups/idea2.0"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Average Query Response Time Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Successful Connections sqldb"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Successful"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed Connections : System Errors sqldb"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Failed"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 9,
+        "x": 15,
+        "y": 51
+      },
+      "id": 20,
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true,
+          "values": []
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "connection_successful",
+            "metricNamespace": "microsoft.sql/servers/databases",
+            "region": "eastus",
+            "resources": [
+              {
+                "metricNamespace": "Microsoft.Sql/servers/databases",
+                "region": "eastus",
+                "resourceGroup": "Idea2.0",
+                "resourceName": "dataplatform123/sqldb",
+                "subscription": "262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+              }
+            ],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "A",
+          "subscription": "262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+        },
+        {
+          "azureMonitor": {
+            "aggregation": "Total",
+            "allowedTimeGrainsMs": [
+              60000,
+              300000,
+              900000,
+              1800000,
+              3600000,
+              21600000,
+              43200000,
+              86400000
+            ],
+            "dimensionFilters": [],
+            "metricName": "connection_failed",
+            "metricNamespace": "microsoft.sql/servers/databases",
+            "region": "eastus",
+            "resources": [
+              {
+                "metricNamespace": "Microsoft.Sql/servers/databases",
+                "region": "eastus",
+                "resourceGroup": "Idea2.0",
+                "resourceName": "dataplatform123/sqldb",
+                "subscription": "262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+              }
+            ],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Monitor",
+          "refId": "B",
+          "subscription": "262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+        }
+      ],
+      "title": "Success Vs Failed Connections",
+      "type": "piechart"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 24,
+        "x": 0,
+        "y": 56
+      },
+      "id": 21,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\njustify-content:center\n\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:15px;font-weight:bold;color:#F8FAFC;\">\nSynapse Overview\n</div>\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Succeeded"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failed"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Total"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Failure"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "super-light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 0,
+        "y": 58
+      },
+      "id": 22,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "center",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "SynapseIntegrationPipelineRuns\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize\r\n    Succeeded = countif(Status == \"Succeeded\"),\r\n    Failed = countif(Status == \"Failed\")\r\n| extend Total = Succeeded + Failed\r\n| extend Failure = iff(\r\n    Total > 0,\r\n    todouble(Failed) * 100.0 / todouble(Total),\r\n    todouble(0)\r\n)",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Pipeline Runs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 9,
+        "y": 58
+      },
+      "id": 23,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "SynapseIntegrationPipelineRuns\r\n| summarize\r\n    total_runs = count(),\r\n    failed_runs = countif(Status == \"Failed\")\r\n    by PipelineName\r\n| extend failure_rate = round(100.0 * failed_runs / total_runs, 2)\r\n| where total_runs > 5",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Failure Rate by Pipeline (%)",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 9,
+        "x": 15,
+        "y": 58
+      },
+      "id": 24,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "SynapseIntegrationPipelineRuns\r\n| where Start >= $__timeFrom()\r\n| summarize runs = count() by PipelineName\r\n| order by runs desc\r\n| take 10",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": " Runs by Pipeline Name ",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Test-Pf-Observability-Landing-Dashboard-1",
+  "uid": "na45vvw",
+  "version": 60,
+  "weekStart": ""
+}
