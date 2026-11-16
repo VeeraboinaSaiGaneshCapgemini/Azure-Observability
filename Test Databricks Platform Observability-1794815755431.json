@@ -1,0 +1,1827 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": {
+          "type": "grafana",
+          "uid": "-- Grafana --"
+        },
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 1,
+  "links": [],
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 12,
+      "options": {
+        "code": {
+          "language": "plaintext",
+          "showLineNumbers": false,
+          "showMiniMap": false
+        },
+        "content": "<div style=\"\nbackground:#071A43;\npadding:18px;\nborder-radius:12px;\ndisplay:flex;\nalign-items:center;\n\">\n<img src=\"https://www.vectorlogo.zone/logos/databricks/databricks-icon.svg\" width=\"42\">\n<div style=\"margin-left:15px;\">\n<div style=\"font-size:26px;font-weight:bold;color:#F8FAFC;\">\nDatabricks Platform Observability\n</div>\n<div style=\"font-size:12px;color:#8EA9DB;\">\nJobs &nbsp; | &nbsp; Pipelines &nbsp; | &nbsp; Clusters &nbsp;\n</div>\n</div>\n</div>",
+        "mode": "html"
+      },
+      "pluginVersion": "12.4.13",
+      "title": "",
+      "type": "text"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#1565c0",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "light-blue",
+                "value": 0
+              },
+              {
+                "color": "light-blue",
+                "value": 100
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "id": 1,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^TotalJobs$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| extend Params = parse_json(RequestParams) // If RequestParams is string\r\n| extend JobId = tostring(Params.jobId)\r\n| where isnotempty(JobId)\r\n| summarize TotalJobs = dcount(JobId) \r\n| project TotalJobs\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Jobs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#9333ead1",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "light-purple",
+                "value": 0
+              },
+              {
+                "color": "#7e27a9",
+                "value": 100
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 4
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^total_pipelines$/",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "let Source = DatabricksDeltaPipelines;\r\nSource\r\n| where TimeGenerated between (ago(90d) .. now())\r\n| where ActionName == \"create\" \r\n       or OperationName contains \"deltaPipelines/create\"\r\n| extend req = parse_json(RequestParams)\r\n| extend res_raw = tostring(Response)\r\n| extend res = iff(res_raw startswith \"{\", parse_json(res_raw), dynamic({}))\r\n| extend res_result = iff(\r\n        isnull(res.result) or tostring(res.result) !startswith \"{\",\r\n        dynamic({}),\r\n        parse_json(tostring(res.result))\r\n)\r\n| extend PipelineName = tostring(coalesce(\r\n        req.name,\r\n        res_result.effective_settings.name\r\n))\r\n| where isnotnull(PipelineName) and PipelineName != \"\"\r\n| summarize total_pipelines = dcount(PipelineName)\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336/resourceGroups/Idea2.0/providers/Microsoft.OperationalInsights/workspaces/pf-observability-log-analytics-workspace"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Pipelines",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#b8b046",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 4
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| where $__timeFilter(TimeGenerated)\r\n| extend RP = parse_json(RequestParams)\r\n| extend JobIdRaw = coalesce(RP.jobId, RP.job_id, RP[\"jobId\"], RP[\"job_id\"])\r\n| extend JobId = tolower(trim(@\" \"\"'\", tostring(JobIdRaw)))\r\n| where isnotempty(JobId)\r\n      and JobId !in (\"null\", \"undefined\", \"0\")\r\n      // Explicitly exclude these job IDs\r\n      and JobId !in (\r\n            \"355358348606857\",\r\n            \"908543307517845\",\r\n            \"241551409130312\",\r\n            \"1104276683673165\",\r\n            \"31208320243706\",\r\n            \"860999508483754\",\r\n            \"64096623998108\",\r\n            \"700121038119701\"\r\n      )\r\n| summarize TotalJobs = dcount(JobId)",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Executed Jobs",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#2563ebd1",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 4
+      },
+      "id": 6,
+      "options": {
+        "colorMode": "background",
+        "graphMode": "none",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 25
+        },
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksClusters\r\n| extend clusterState = tostring(parse_json(RequestParams).clusterState),\r\n         clusterId = tostring(parse_json(RequestParams).clusterId)\r\n| where clusterState == \"Running\"\r\n| summarize ActiveClusters = dcount(clusterId)",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Clusters Created",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#FF7383",
+            "mode": "fixed"
+          },
+          "fieldMinMax": false,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 4
+      },
+      "id": 5,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize \r\n    TotalJobs = countif(ActionName in (\"runSucceeded\", \"runFailed\")),  \r\n    FailedJobs = countif(ActionName == \"runFailed\")\r\n| project FailureRate = round(FailedJobs * 100.0 / TotalJobs, 1)\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Failure Rate",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "#6eae66",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "max": 100,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "light-yellow",
+                "value": 60
+              },
+              {
+                "color": "#22c55ed1",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "percent"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 20,
+        "y": 4
+      },
+      "id": 4,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/.*/",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize\r\n    TotalJobs = countif(ActionName in (\"runSucceeded\", \"runFailed\")),\r\n    SuccessJobs = countif(ActionName == \"runSucceeded\")\r\n| extend SuccessRate = iff(TotalJobs == 0, 0.0, round((todouble(SuccessJobs) / TotalJobs) * 100, 1))\r\n| project SuccessRate",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Success Rate",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": []
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "SuccessPercent"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "#34e775",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FailedPercent"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-red",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 0,
+        "y": 8
+      },
+      "id": 16,
+      "options": {
+        "displayLabels": [],
+        "legend": {
+          "displayMode": "list",
+          "placement": "right",
+          "showLegend": true,
+          "values": [
+            "percent"
+          ]
+        },
+        "pieType": "donut",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "sort": "desc",
+        "tooltip": {
+          "hideZeros": false,
+          "maxHeight": 50,
+          "maxWidth": 10,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize \r\n    TotalJobs = countif(ActionName in (\"runSucceeded\", \"runFailed\")),  \r\n    SuccessJobs = countif(ActionName == \"runSucceeded\")\r\n| project SuccessPercent = round(SuccessJobs * 100.0 / TotalJobs, 1)\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        },
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "DatabricksJobs\r\n| where $__timeFilter(TimeGenerated)\r\n| summarize \r\n    TotalJobs = countif(ActionName in (\"runSucceeded\", \"runFailed\")),  \r\n    FailedJobs = countif(ActionName == \"runFailed\")\r\n| project FailedPercent = round(FailedJobs * 100.0 / TotalJobs, 1)\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "B"
+        }
+      ],
+      "title": "Job Success vs Failure",
+      "type": "piechart"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 35,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineWidth": 1.5,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "fieldMinMax": false,
+          "mappings": [
+            {
+              "options": {
+                "Failed": {
+                  "color": "red",
+                  "index": 2,
+                  "text": "● Failed"
+                },
+                "Running": {
+                  "color": "green",
+                  "index": 0,
+                  "text": "● Running"
+                },
+                "Success": {
+                  "color": "green",
+                  "index": 1,
+                  "text": "● Success"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JobsPerHour"
+            },
+            "properties": [
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "green",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 8,
+        "y": 8
+      },
+      "id": 11,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "\r\nDatabricksJobs\r\n| extend Params = parse_json(RequestParams)\r\n| extend JobId = tostring(Params[\"jobId\"]),\r\n         RunId = tostring(Params[\"runId\"])\r\n| summarize JobsPerHour = dcount(RunId) by bin(TimeGenerated, 1h)\r\n| order by bin(TimeGenerated, 1h) asc\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Databricks Jobs – Hourly Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "semi-dark-red",
+            "mode": "fixed"
+          },
+          "custom": {
+            "axisBorderShow": true,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 1,
+            "barWidthFactor": 0.6,
+            "drawStyle": "line",
+            "fillOpacity": 35,
+            "gradientMode": "hue",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "smooth",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1.5,
+            "pointSize": 9,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "showValues": false,
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FailedJobs"
+            },
+            "properties": []
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 8,
+        "x": 16,
+        "y": 8
+      },
+      "id": 8,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "hideZeros": false,
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "\r\nDatabricksJobs\r\n| extend Params = parse_json(RequestParams)\r\n| extend ResponseJson = parse_json(Response)\r\n| extend StatusCode = tostring(ResponseJson.statusCode)\r\n| extend ErrorMessage = tostring(ResponseJson.errorMessage)\r\n| extend RunId = tostring(Params[\"runId\"])\r\n| where StatusCode != \"200\"  // Non-success codes indicate failure\r\n| summarize FailedJobs = dcount(RunId) by bin(TimeGenerated, 1h)\r\n| order by bin(TimeGenerated, 1h) asc\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Job Failure Trend",
+      "type": "timeseries"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "Active": {
+                  "color": "super-light-green",
+                  "index": 1
+                },
+                "Inactive": {
+                  "color": "light-red",
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "ClusterState"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 13,
+      "options": {
+        "cellHeight": "md",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "ClusterState"
+          }
+        ]
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "\r\nlet LatestState = DatabricksClusters\r\n| extend rp = parse_json(RequestParams)\r\n| extend clusterId = tostring(coalesce(rp.cluster_id, rp[\"cluster_id\"], rp.clusterId))\r\n| where isnotempty(clusterId)\r\n| where ActionName !has \"delete\"  // Exclude delete actions\r\n| summarize TimeGenerated = arg_max(TimeGenerated, ActionName) by clusterId\r\n| extend LastSeen = TimeGenerated\r\n| extend ClusterState = case(\r\n    ActionName has \"terminate\", \"Terminated\",\r\n    ActionName has \"start\", \"Running\",\r\n    ActionName has \"create\", \"Created\",\r\n    ActionName has \"resize\", \"Resizing\",\r\n    LastSeen < ago(30m), \"Inactive\",\r\n    \"Idle\");\r\n\r\nlet History = DatabricksClusters\r\n| extend rp = parse_json(RequestParams)\r\n| extend clusterId = tostring(coalesce(rp.cluster_id, rp[\"cluster_id\"], rp.clusterId))\r\n| where isnotempty(clusterId)\r\n| where ActionName !has \"delete\"  // Exclude delete actions\r\n| summarize firstSeen = min(TimeGenerated) by clusterId;\r\n\r\nLatestState\r\n| join kind=leftouter History on clusterId\r\n| extend avgUptimeMinutes = datetime_diff('minute', LastSeen, firstSeen)\r\n| project clusterId, ClusterState, LastSeen, firstSeen, avgUptimeMinutes\r\n| order by LastSeen desc\r\n| take 10",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Databricks Cluster Lifecycle Summary",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [
+            {
+              "options": {
+                "Failed": {
+                  "color": "red",
+                  "index": 1
+                },
+                "Queued": {
+                  "color": "yellow",
+                  "index": 2
+                },
+                "Succeeded": {
+                  "color": "green",
+                  "index": 0
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LatestRun_Status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 105
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PrevRun1_Status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 110
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PrevRun2_Status"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "custom.width",
+                "value": 101
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JobId"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Open ${__data.fields[\"JobId\"]} in Azure Databricks ",
+                    "url": "${__data.fields[\"DatabricksJobUrl\"]:raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LatestRun_Start"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PrevRun1_Start"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PrevRun2_Start"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PrevRun2_End"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 20
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 20
+      },
+      "id": 7,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "// ================== PARAMETERS ==================\r\nlet treatSkippedAsSuccess = 0;\r\n\r\n// Keep this as a plain string.\r\n// Do not paste the HTML ... value into the KQL query.\r\nlet DatabricksWorkspaceUrl =\r\n    \"https://adb-4498671387938000.0.azuredatabricks.net\";\r\n\r\n// ================== RAW NORMALIZATION ==================\r\nlet RunsRaw =\r\n    DatabricksJobs\r\n    | extend Params = parse_json(RequestParams)\r\n    | extend\r\n        JobId = tostring(\r\n            coalesce(\r\n                column_ifexists(\"JobId\", \"\"),\r\n                Params[\"jobId\"]\r\n            )\r\n        ),\r\n        RunId = tostring(\r\n            coalesce(\r\n                column_ifexists(\"RunId\", \"\"),\r\n                Params[\"runId\"]\r\n            )\r\n        ),\r\n        TaskKey = tostring(\r\n            coalesce(\r\n                column_ifexists(\"taskKey\", \"\"),\r\n                Params[\"taskKey\"]\r\n            )\r\n        )\r\n    | extend ResultRaw = tostring(\r\n        coalesce(\r\n            column_ifexists(\"ResultState\", \"\"),\r\n            column_ifexists(\"resultState\", \"\"),\r\n            Params[\"resultState\"],\r\n            Params[\"taskRunResultState\"],\r\n            Params[\"state\"],\r\n            Params[\"jobTerminalState\"]\r\n        )\r\n    )\r\n    | extend EventTime = todatetime(TimeGenerated)\r\n    | where isnotempty(JobId)\r\n        and isnotempty(RunId)\r\n    | where $__timeFilter(EventTime)\r\n;\r\n\r\n// ================== TASK-LEVEL RECORDS ==================\r\nlet TaskRecords =\r\n    RunsRaw\r\n    | where isnotempty(TaskKey)\r\n    | extend result_upper = toupper(ResultRaw)\r\n    | extend result_class = case(\r\n        result_upper in (\"SUCCESS\", \"SUCCEEDED\"), \"SUCCESS\",\r\n        result_upper == \"SKIPPED\", \"SKIPPED\",\r\n        result_upper in (\r\n            \"FAILED\",\r\n            \"FAILURE\",\r\n            \"ERROR\",\r\n            \"TERMINATED\",\r\n            \"TIMEDOUT\",\r\n            \"TIMEOUT\",\r\n            \"CANCELED\",\r\n            \"CANCELLED\"\r\n        ), \"FAILED\",\r\n        \"UNKNOWN\"\r\n    )\r\n;\r\n\r\n// ================== FINAL TASK RESULT ==================\r\nlet PerTaskFinal =\r\n    TaskRecords\r\n    | summarize arg_max(EventTime, result_class)\r\n        by JobId, RunId, TaskKey\r\n    | project\r\n        JobId,\r\n        RunId,\r\n        TaskKey,\r\n        TaskResult = result_class\r\n;\r\n\r\n// ================== SUCCESS STATES ==================\r\nlet successStates =\r\n    iff(\r\n        treatSkippedAsSuccess == 1,\r\n        dynamic([\"SUCCESS\", \"SKIPPED\"]),\r\n        dynamic([\"SUCCESS\"])\r\n    );\r\n\r\n// ================== RUN TIME BOUNDARIES ==================\r\n// Derives the earliest and latest event time for each run.\r\nlet RunTimeBoundaries =\r\n    RunsRaw\r\n    | summarize\r\n        RunStart = min(EventTime),\r\n        RunEnd = max(EventTime)\r\n      by JobId, RunId\r\n    | extend DurationSeconds =\r\n        datetime_diff(\r\n            \"second\",\r\n            RunEnd,\r\n            RunStart\r\n        )\r\n;\r\n\r\n// ================== RUN-LEVEL REDUCTION ==================\r\nlet RunOverall_Base =\r\n    PerTaskFinal\r\n    | summarize\r\n        TasksTotal = dcount(TaskKey),\r\n        TasksSucceeded = countif(TaskResult in (successStates))\r\n      by JobId, RunId\r\n    | extend OverallStatus = iff(\r\n        TasksTotal > 0\r\n            and TasksSucceeded == TasksTotal,\r\n        \"Succeeded\",\r\n        \"Failed\"\r\n    )\r\n    | join kind=leftouter RunTimeBoundaries on JobId, RunId\r\n    | project\r\n        JobId,\r\n        RunId,\r\n        RunStart,\r\n        RunEnd,\r\n        DurationSeconds,\r\n        OverallStatus,\r\n        TasksTotal,\r\n        TasksSucceeded\r\n    | where isnotempty(RunEnd)\r\n;\r\n\r\n// ================== LATEST RUN ==================\r\n// arg_max returns the row having the greatest RunEnd,\r\n// including the duration and status from that same row.\r\nlet LatestPerJob =\r\n    RunOverall_Base\r\n    | summarize arg_max(RunEnd, *) by JobId\r\n    | project\r\n        JobId,\r\n        LatestRunId = RunId,\r\n        LatestRun_Start = RunStart,\r\n        LatestRun_End = RunEnd,\r\n        LatestRun_Status = OverallStatus,\r\n        DurationSeconds,\r\n        LatestRun_TasksTotal = TasksTotal,\r\n        LatestRun_TasksSucceeded = TasksSucceeded\r\n;\r\n\r\n// ================== MAX DURATION PER JOB ==================\r\n// Maximum duration across runs available in the selected\r\n// Grafana time range.\r\nlet MaxDurationPerJob =\r\n    RunOverall_Base\r\n    | summarize\r\n        MaxDurationSeconds = max(DurationSeconds)\r\n      by JobId\r\n;\r\n\r\n// ================== PREVIOUS RUN ==================\r\nlet Prev1 =\r\n    RunOverall_Base\r\n    | join kind=inner (\r\n        LatestPerJob\r\n        | project\r\n            JobId,\r\n            LatestRun_End\r\n    ) on JobId\r\n    | where RunEnd < LatestRun_End\r\n    | summarize arg_max(RunEnd, *) by JobId\r\n    | project\r\n        JobId,\r\n        PrevRun1_Start = RunStart,\r\n        PrevRun1_End = RunEnd,\r\n        PrevRun1_Status = OverallStatus,\r\n        PrevRun1_DurationSeconds = DurationSeconds\r\n;\r\n\r\n// ================== SECOND PREVIOUS RUN ==================\r\nlet Prev2 =\r\n    RunOverall_Base\r\n    | join kind=inner (\r\n        Prev1\r\n        | project\r\n            JobId,\r\n            PrevRun1_End\r\n    ) on JobId\r\n    | where RunEnd < PrevRun1_End\r\n    | summarize arg_max(RunEnd, *) by JobId\r\n    | project\r\n        JobId,\r\n        PrevRun2_Start = RunStart,\r\n        PrevRun2_End = RunEnd,\r\n        PrevRun2_Status = OverallStatus,\r\n        PrevRun2_DurationSeconds = DurationSeconds\r\n;\r\n\r\n// ================== FINAL OUTPUT ==================\r\nLatestPerJob\r\n| join kind=leftouter MaxDurationPerJob on JobId\r\n| join kind=leftouter Prev1 on JobId\r\n| join kind=leftouter Prev2 on JobId\r\n| extend\r\n    Duration = format_timespan(\r\n        totimespan(DurationSeconds * 1s),\r\n        \"hh:mm:ss\"\r\n    ),\r\n    MaxDuration = format_timespan(\r\n        totimespan(MaxDurationSeconds * 1s),\r\n        \"hh:mm:ss\"\r\n    ),\r\n    DatabricksJobUrl = strcat(\r\n        DatabricksWorkspaceUrl,\r\n        \"/jobs/\",\r\n        tostring(JobId)\r\n    )\r\n| project\r\n    JobId,\r\n    LatestRunId,\r\n    LatestRun_Start,\r\n    LatestRun_End,\r\n    LatestRun_Status,\r\n    Duration,\r\n    DurationSeconds,\r\n    MaxDuration,\r\n    MaxDurationSeconds,\r\n    LatestRun_TasksTotal,\r\n    LatestRun_TasksSucceeded,\r\n    PrevRun1_Start,\r\n    PrevRun1_End,\r\n    PrevRun1_Status,\r\n    PrevRun1_DurationSeconds,\r\n    PrevRun2_Start,\r\n    PrevRun2_End,\r\n    PrevRun2_Status,\r\n    PrevRun2_DurationSeconds,\r\n    DatabricksJobUrl\r\n| order by LatestRun_End desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "datasource": {
+            "type": "grafana-azure-monitor-datasource",
+            "uid": "azure-monitor-oob"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Job Execution Table",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JobId"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 140
+              },
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Open JobId in Azure Databricks ",
+                    "url": "${__data.fields[\"DatabricksJobUrl\"]:raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TriggerType"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 150
+              },
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "manual": {
+                        "color": "#fff899e3",
+                        "index": 0
+                      },
+                      "retry": {
+                        "color": "light-blue",
+                        "index": 1
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "FailedRuns"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 96
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "StatusCodes"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 101
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "TriggeredBy"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 154
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Errors"
+            },
+            "properties": [
+              {
+                "id": "custom.width",
+                "value": 448
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DatabricksJobUrl"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 15,
+      "options": {
+        "cellHeight": "md",
+        "showHeader": true,
+        "sortBy": [
+          {
+            "desc": false,
+            "displayName": "StatusCodes"
+          }
+        ]
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "let DatabricksWorkspaceUrl = \"https://adb-4498671387938000.0.azuredatabricks.net\";\r\nDatabricksJobs\r\n| where $__timeFilter(TimeGenerated)\r\n| where ActionName == \"runFailed\"\r\n| extend \r\n    JobId = tostring(parse_json(RequestParams).jobId),\r\n    RunId = tostring(parse_json(RequestParams).runId),\r\n    TriggerType = tostring(parse_json(RequestParams).jobTriggerType),\r\n    TriggeredBy = tostring(parse_json(RequestParams).runCreatorUserName),\r\n    IdentityEmail = tostring(parse_json(Identity).email),\r\n    StatusCode = tostring(extractjson(\"$.statusCode\", Response)),\r\n    ErrorMessage = tostring(extractjson(\"$.errorMessage\", Response))\r\n| summarize \r\n    FailedRuns = count(),\r\n    StatusCodes = strcat_array(make_set(StatusCode, 5), \", \"),\r\n    Errors = strcat_array(make_set(ErrorMessage, 5), \" | \"),\r\n    RecentFailureTime = max(TimeGenerated)\r\n    by JobId, TriggerType, TriggeredBy\r\n| extend DatabricksJobUrl = strcat(\r\n    DatabricksWorkspaceUrl,\r\n    \"/jobs/\",\r\n    JobId\r\n)\r\n\r\n| project \r\n    JobId,\r\n    TriggerType,\r\n    RecentFailureTime,\r\n    FailedRuns,\r\n    StatusCodes,\r\n    Errors,\r\n    TriggeredBy,\r\n    DatabricksJobUrl\r\n| order by FailedRuns desc\r\n| take 15\r\n",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Job Error Analysis",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JobId"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Open JobId in Azure Databricks ",
+                    "url": "${__data.fields[\"DatabricksJobUrl\"]}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "RunId"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Open Databricks Job Run",
+                    "url": "${__data.fields.DatabricksRunUrl}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DatabricksRunUrl"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DatabricksJobUrl"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Duration"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "s"
+              },
+              {
+                "id": "custom.align",
+                "value": "center"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Status"
+            },
+            "properties": [
+              {
+                "id": "mappings",
+                "value": [
+                  {
+                    "options": {
+                      "Cancelled": {
+                        "color": "semi-dark-orange",
+                        "index": 3
+                      },
+                      "Failed": {
+                        "color": "red",
+                        "index": 0
+                      },
+                      "Terminated": {
+                        "color": "dark-red",
+                        "index": 2
+                      },
+                      "Timed Out": {
+                        "color": "light-orange",
+                        "index": 1
+                      }
+                    },
+                    "type": "value"
+                  }
+                ]
+              },
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 37
+      },
+      "id": 14,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "// ========================================================\r\n// PANEL: Databricks Failed Job Runs - Failure Diagnostics\r\n// ========================================================\r\n\r\n// Use only the plain Databricks workspace URL.\r\n// Do not include <a href>, &quot;, target, title, or HTML tags.\r\nlet DatabricksWorkspaceUrl =\r\n    \"https://adb-4498671387938000.0.azuredatabricks.net\";\r\n\r\n// ================== RAW NORMALIZATION ==================\r\nlet FailedRunEvents =\r\n    DatabricksJobs\r\n    | where $__timeFilter(TimeGenerated)\r\n\r\n    // Parse JSON columns once.\r\n    | extend\r\n        Params = parse_json(RequestParams),\r\n        ResponseData = parse_json(Response),\r\n        IdentityData = parse_json(Identity)\r\n\r\n    // Normalize JobId, RunId, and TaskKey.\r\n    | extend\r\n        JobId = tostring(\r\n            coalesce(\r\n                tostring(Params[\"jobId\"]),\r\n                tostring(Params[\"job_id\"]),\r\n                tostring(Params[\"jobID\"])\r\n            )\r\n        ),\r\n        RunId = tostring(\r\n            coalesce(\r\n                tostring(Params[\"runId\"]),\r\n                tostring(Params[\"run_id\"]),\r\n                tostring(Params[\"jobRunId\"])\r\n            )\r\n        ),\r\n        TaskKey = tostring(\r\n            coalesce(\r\n                tostring(Params[\"taskKey\"]),\r\n                tostring(Params[\"task_key\"]),\r\n                tostring(Params[\"taskName\"]),\r\n                tostring(Params[\"task_name\"])\r\n            )\r\n        )\r\n\r\n    // Normalize final job status.\r\n    | extend StatusRaw = tostring(\r\n        coalesce(\r\n            tostring(ResponseData[\"resultState\"]),\r\n            tostring(ResponseData[\"result_state\"]),\r\n            tostring(ResponseData[\"state\"]),\r\n            tostring(ResponseData[\"status\"]),\r\n            tostring(Params[\"resultState\"]),\r\n            tostring(Params[\"result_state\"]),\r\n            tostring(Params[\"taskRunResultState\"]),\r\n            tostring(Params[\"jobTerminalState\"]),\r\n            tostring(Params[\"state\"])\r\n        )\r\n    )\r\n    | extend StatusUpper = toupper(trim(\" \", StatusRaw))\r\n    | extend NormalizedStatus = case(\r\n        StatusUpper == \"FAILED\", \"Failed\",\r\n        StatusUpper == \"FAILURE\", \"Failed\",\r\n        StatusUpper == \"ERROR\", \"Failed\",\r\n        StatusUpper == \"INTERNAL_ERROR\", \"Failed\",\r\n        StatusUpper == \"TIMEDOUT\", \"Timed Out\",\r\n        StatusUpper == \"TIMEOUT\", \"Timed Out\",\r\n        StatusUpper == \"TERMINATED\", \"Terminated\",\r\n        StatusUpper == \"CANCELED\", \"Cancelled\",\r\n        StatusUpper == \"CANCELLED\", \"Cancelled\",\r\n        StatusUpper == \"SUCCESS\", \"Succeeded\",\r\n        StatusUpper == \"SUCCEEDED\", \"Succeeded\",\r\n        StatusUpper == \"RUNNING\", \"Running\",\r\n        StatusUpper == \"PENDING\", \"Pending\",\r\n        StatusUpper == \"QUEUED\", \"Queued\",\r\n        StatusUpper == \"SKIPPED\", \"Skipped\",\r\n        \"Unknown\"\r\n    )\r\n\r\n    // Extract error type.\r\n    | extend ErrorTypeRaw = tostring(\r\n        coalesce(\r\n            tostring(ResponseData[\"errorCode\"]),\r\n            tostring(ResponseData[\"error_code\"]),\r\n            tostring(ResponseData[\"errorType\"]),\r\n            tostring(ResponseData[\"error_type\"]),\r\n            tostring(ResponseData[\"exceptionType\"]),\r\n            tostring(ResponseData[\"exception_type\"]),\r\n            tostring(Params[\"errorCode\"]),\r\n            tostring(Params[\"error_code\"])\r\n        )\r\n    )\r\n\r\n    // Extract error message.\r\n    | extend ErrorMessageRaw = tostring(\r\n        coalesce(\r\n            tostring(ResponseData[\"errorMessage\"]),\r\n            tostring(ResponseData[\"error_message\"]),\r\n            tostring(ResponseData[\"message\"]),\r\n            tostring(ResponseData[\"stackTrace\"]),\r\n            tostring(ResponseData[\"stack_trace\"]),\r\n            tostring(Params[\"errorMessage\"]),\r\n            tostring(Params[\"error_message\"])\r\n        )\r\n    )\r\n\r\n    // Extract notebook and cluster information.\r\n    | extend NotebookPath = tostring(\r\n        coalesce(\r\n            tostring(Params[\"notebookPath\"]),\r\n            tostring(Params[\"notebook_path\"]),\r\n            tostring(Params[\"path\"])\r\n        )\r\n    )\r\n    | extend ClusterId = tostring(\r\n        coalesce(\r\n            tostring(Params[\"clusterId\"]),\r\n            tostring(Params[\"cluster_id\"]),\r\n            tostring(Params[\"existingClusterId\"]),\r\n            tostring(Params[\"existing_cluster_id\"])\r\n        )\r\n    )\r\n\r\n    // Determine the point where the run failed.\r\n    | extend PointOfFailureRaw = case(\r\n        isnotempty(TaskKey),\r\n            strcat(\"Task: \", TaskKey),\r\n\r\n        isnotempty(NotebookPath),\r\n            strcat(\"Notebook: \", NotebookPath),\r\n\r\n        isnotempty(ClusterId),\r\n            strcat(\"Cluster: \", ClusterId),\r\n\r\n        isnotempty(ActionName),\r\n            strcat(\"Action: \", tostring(ActionName)),\r\n\r\n        \"Job level\"\r\n    )\r\n\r\n    // First preference: runCreatorUserName from RequestParams.\r\n    // Other properties are used only as fallback options.\r\n    | extend TriggeredByRaw = tostring(\r\n        coalesce(\r\n            tostring(Params[\"runCreatorUserName\"]),\r\n            tostring(Params[\"run_creator_user_name\"]),\r\n            tostring(Params[\"creatorUserName\"]),\r\n            tostring(Params[\"userName\"]),\r\n            tostring(IdentityData[\"email\"]),\r\n            tostring(IdentityData[\"userName\"]),\r\n            tostring(IdentityData[\"username\"]),\r\n            tostring(IdentityData[\"principalName\"]),\r\n            tostring(IdentityData[\"servicePrincipalName\"])\r\n        )\r\n    )\r\n\r\n    // Use TimeGenerated as the lifecycle event timestamp.\r\n    | extend EventTime = todatetime(TimeGenerated)\r\n\r\n    // Keep records with valid job and run identifiers.\r\n    | where isnotempty(JobId)\r\n    | where isnotempty(RunId)\r\n;\r\n\r\n// ================== RUN TIME BOUNDARIES ==================\r\nlet RunTimeBoundaries =\r\n    FailedRunEvents\r\n    | summarize\r\n        Start = min(EventTime),\r\n        End = max(EventTime),\r\n        EventCount = count()\r\n      by JobId, RunId\r\n    | extend DurationSeconds =\r\n        datetime_diff(\r\n            \"second\",\r\n            End,\r\n            Start\r\n        )\r\n    | extend DurationSeconds = iff(\r\n        DurationSeconds < 0,\r\n        long(0),\r\n        DurationSeconds\r\n    )\r\n;\r\n\r\n// ================== FINAL RUN DETAILS ==================\r\n// Get the newest lifecycle record for every JobId and RunId.\r\nlet FinalRunDetails =\r\n    FailedRunEvents\r\n    | summarize arg_max(\r\n        EventTime,\r\n        NormalizedStatus,\r\n        ErrorTypeRaw,\r\n        ErrorMessageRaw,\r\n        PointOfFailureRaw,\r\n        TriggeredByRaw,\r\n        TaskKey,\r\n        NotebookPath,\r\n        ClusterId\r\n    ) by JobId, RunId\r\n    | project\r\n        JobId,\r\n        RunId,\r\n        Status = NormalizedStatus,\r\n        ErrorTypeRaw,\r\n        ErrorMessageRaw,\r\n        PointOfFailureRaw,\r\n        TriggeredByRaw\r\n;\r\n\r\n// ================== FINAL PANEL OUTPUT ==================\r\nRunTimeBoundaries\r\n| join kind=inner FinalRunDetails on JobId, RunId\r\n\r\n// Keep failure-related terminal states.\r\n| where Status == \"Failed\"\r\n    or Status == \"Timed Out\"\r\n    or Status == \"Terminated\"\r\n    or Status == \"Cancelled\"\r\n\r\n// Apply fallback values where logs do not contain the details.\r\n| extend\r\n    ErrorType = iff(\r\n        isnotempty(ErrorTypeRaw),\r\n        ErrorTypeRaw,\r\n        case(\r\n            Status == \"Timed Out\", \"TIMEOUT\",\r\n            Status == \"Terminated\", \"TERMINATED\",\r\n            Status == \"Cancelled\", \"CANCELLED\",\r\n            \"UNCLASSIFIED_FAILURE\"\r\n        )\r\n    ),\r\n    ErrorMessage = iff(\r\n        isnotempty(ErrorMessageRaw),\r\n        ErrorMessageRaw,\r\n        \"Error message was not available in the Databricks audit log.\"\r\n    ),\r\n    PointOfFailure = iff(\r\n        isnotempty(PointOfFailureRaw),\r\n        PointOfFailureRaw,\r\n        \"Unknown\"\r\n    ),\r\n    TriggeredBy = iff(\r\n        isnotempty(TriggeredByRaw),\r\n        TriggeredByRaw,\r\n        \"Unknown\"\r\n    )\r\n\r\n// Create direct Databricks links.\r\n//\r\n// DatabricksRunUrl redirects to the specific job run.\r\n// DatabricksJobUrl redirects to the overall job page.\r\n| extend\r\n    DatabricksRunUrl = strcat(\r\n        DatabricksWorkspaceUrl,\r\n        \"/jobs/\",\r\n        tostring(JobId),\r\n        \"/runs/\",\r\n        tostring(RunId)\r\n    ),\r\n    DatabricksJobUrl = strcat(\r\n        DatabricksWorkspaceUrl,\r\n        \"/jobs/\",\r\n        tostring(JobId)\r\n    )\r\n\r\n// Final table columns.\r\n| project\r\n    JobId = tostring(JobId),\r\n    RunId = tostring(RunId),\r\n    Status,\r\n    Start,\r\n    End,\r\n    Duration = DurationSeconds,\r\n    ErrorType,\r\n    ErrorMessage,\r\n    PointOfFailure,\r\n    TriggeredBy,\r\n    DatabricksRunUrl,\r\n    DatabricksJobUrl\r\n\r\n| order by End desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs",
+            "timeColumn": "TimeGenerated"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed Job Execution Details",
+      "type": "table"
+    },
+    {
+      "datasource": {
+        "type": "grafana-azure-monitor-datasource",
+        "uid": "azure-monitor-oob"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "align": "center",
+            "cellOptions": {
+              "type": "auto"
+            },
+            "filterable": true,
+            "footer": {
+              "reducers": []
+            },
+            "inspect": false
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": 0
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JobName"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "TaskName"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "LastRunTime"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "light-blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "DatabricksJobUrl"
+            },
+            "properties": [
+              {
+                "id": "custom.hideFrom.viz",
+                "value": true
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "JobId"
+            },
+            "properties": [
+              {
+                "id": "links",
+                "value": [
+                  {
+                    "targetBlank": true,
+                    "title": "Open JobId in Azure Databricks ",
+                    "url": "${__data.fields[\"DatabricksJobUrl\"]:raw}"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "PercentDeviation"
+            },
+            "properties": [
+              {
+                "id": "custom.cellOptions",
+                "value": {
+                  "type": "color-text"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 24,
+        "x": 0,
+        "y": 45
+      },
+      "id": 17,
+      "options": {
+        "cellHeight": "sm",
+        "showHeader": true
+      },
+      "pluginVersion": "12.4.13",
+      "targets": [
+        {
+          "azureLogAnalytics": {
+            "dashboardTime": false,
+            "mode": "raw",
+            "query": "// ========================================================\r\n// PANEL: Critical Deviation Jobs\r\n// Follows the Grafana dashboard time picker\r\n// ========================================================\r\n\r\nlet DatabricksWorkspaceUrl =\r\n    \"https://adb-4498671387938000.0.azuredatabricks.net\";\r\n\r\n// ================== RUN START EVENTS ==================\r\nlet StartedJobs =\r\n    DatabricksJobs\r\n    | where $__timeFilter(TimeGenerated)\r\n    | where ActionName == \"runStart\"\r\n    | extend Params = parse_json(RequestParams)\r\n    | extend\r\n        StartTime = todatetime(TimeGenerated),\r\n        JobId = tostring(Params[\"jobId\"]),\r\n        JobName = tostring(Params[\"taskKey\"]),\r\n        RunId = tostring(Params[\"runId\"])\r\n    | where isnotempty(JobId)\r\n        and isnotempty(RunId)\r\n    | summarize\r\n        StartTime = min(StartTime),\r\n        JobName = take_any(JobName)\r\n      by JobId, RunId;\r\n\r\n// ================== RUN SUCCESS EVENTS ==================\r\nlet SucceededJobs =\r\n    DatabricksJobs\r\n    | where $__timeFilter(TimeGenerated)\r\n    | where ActionName == \"runSucceeded\"\r\n    | extend Params = parse_json(RequestParams)\r\n    | extend\r\n        EndTime = todatetime(TimeGenerated),\r\n        JobId = tostring(Params[\"jobId\"]),\r\n        JobName = tostring(Params[\"taskKey\"]),\r\n        RunId = tostring(Params[\"runId\"])\r\n    | where isnotempty(JobId)\r\n        and isnotempty(RunId)\r\n    | summarize\r\n        EndTime = max(EndTime),\r\n        JobName = take_any(JobName)\r\n      by JobId, RunId;\r\n\r\n// ================== JOIN START AND SUCCESS EVENTS ==================\r\nStartedJobs\r\n| join kind=inner SucceededJobs on JobId, RunId\r\n\r\n// Use the available job name from either event.\r\n| extend JobName = coalesce(JobName, JobName1)\r\n\r\n// Calculate duration for every completed successful run.\r\n| extend DurationSec = datetime_diff(\r\n    \"second\",\r\n    EndTime,\r\n    StartTime\r\n)\r\n| where DurationSec >= 0\r\n\r\n// ================== PANEL CALCULATION ==================\r\n| summarize\r\n    LastRunDuration = max(DurationSec),\r\n    AvgPast3Runs = avg(todouble(DurationSec)),\r\n    LastRunTime = max(EndTime)\r\n  by JobId, JobName\r\n\r\n| extend PercentDeviation = iff(\r\n    isnull(AvgPast3Runs)\r\n        or AvgPast3Runs == 0,\r\n    real(0),\r\n    round(\r\n        (\r\n            (\r\n                todouble(LastRunDuration)\r\n                - AvgPast3Runs\r\n            )\r\n            / AvgPast3Runs\r\n        ) * 100.0,\r\n        2\r\n    )\r\n)\r\n\r\n// Show jobs with more than 20% deviation.\r\n| where PercentDeviation > 20\r\n\r\n// Create Databricks job URL.\r\n| extend DatabricksJobUrl = strcat(\r\n    DatabricksWorkspaceUrl,\r\n    \"/jobs/\",\r\n    tostring(JobId)\r\n)\r\n\r\n| project\r\n    JobId,\r\n    JobName,\r\n    LastRunTime,\r\n    LastRunDuration,\r\n    AvgPast3Runs = round(AvgPast3Runs, 2),\r\n    PercentDeviation,\r\n    DatabricksJobUrl\r\n\r\n| order by PercentDeviation desc",
+            "resources": [
+              "/subscriptions/262a3c1d-7fe3-4bfb-9f90-7a5b89109336"
+            ],
+            "resultFormat": "logs"
+          },
+          "azureMonitor": {
+            "allowedTimeGrainsMs": [],
+            "timeGrain": "auto"
+          },
+          "queryType": "Azure Log Analytics",
+          "refId": "A"
+        }
+      ],
+      "title": "Critical Deviation Jobs",
+      "type": "table"
+    }
+  ],
+  "preload": false,
+  "refresh": "30s",
+  "schemaVersion": 42,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-5m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "browser",
+  "title": "Test Databricks Platform Observability",
+  "uid": "nar4bhp",
+  "version": 97,
+  "weekStart": ""
+}
